@@ -7,6 +7,13 @@ local function pad(desc, fill, width)
 	return desc .. " " .. string.rep(fill, gap - 2) .. " "
 end
 
+local function logo_height(logo)
+  local cmd = 'fastfetch -s none'
+  if logo then cmd = cmd .. ' --logo ' .. logo end
+  local result = vim.fn.system(cmd .. ' 2>/dev/null | wc -l')
+  return tonumber(result) or 20
+end
+
 return {
   "folke/snacks.nvim",
   priority = 1000,
@@ -82,8 +89,8 @@ return {
     {
       pane = 2,
       section = "terminal",
-      cmd = "fastfetch -s none --logo-padding-left 10",
-      height = 20,
+      cmd = "fastfetch -s none --logo-padding-left 15",
+      height = logo_height(),
       padding = 1,
     },
       {
