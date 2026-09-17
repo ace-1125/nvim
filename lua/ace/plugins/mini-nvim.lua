@@ -1,59 +1,36 @@
-return { -- Collection of various small independent plugins/modules
-  'nvim-mini/mini.nvim',
-  config = function()
-    -- Better Around/Inside textobjects
-    --
-    -- Examples:
-    --  - va)  - [V]isually select [A]round [)]paren
-    --  - yinq - [Y]ank [I]nside [N]ext [Q]uote
-    --  - ci'  - [C]hange [I]nside [']quote
-    require('mini.ai').setup { n_lines = 500 }
+return {
+	"nvim-mini/mini.nvim",
+	lazy = false,
+	config = function()
+		require("mini.ai").setup({ n_lines = 500 })
+		require("mini.surround").setup()
 
-    -- Add/delete/replace surroundings (brackets, quotes, etc.)
-    --
-    -- - saiw) - [S]urround [A]dd [I]nner [W]ord [)]Paren
-    -- - sd'   - [S]urround [D]elete [']quotes
-    -- - sr)'  - [S]urround [R]eplace [)] [']
-    require('mini.surround').setup()
+		local statusline = require("mini.statusline")
+		statusline.setup({ use_icons = vim.g.have_nerd_font })
 
-    -- Simple and easy statusline.
-    --  You could remove this setup call if you don't like it,
-    --  and try some other statusline plugin
-    local statusline = require 'mini.statusline'
-    -- set use_icons to true if you have a Nerd Font
-    statusline.setup { use_icons = vim.g.have_nerd_font }
+		local default_section_filename = statusline.section_filename
 
-    ---@diagnostic disable-next-line: duplicate-set-field
-    local default_section_filename = statusline.section_filename
+		local function save_icon()
+			local state = _G.autosave_state()
+			if state == "on" then
+				return "%#AutoSaveOn# ●%*"
+			elseif state == "ignored" then
+				return "%#AutoSaveIgnored# ●%*"
+			else
+				return "%#AutoSaveOff# ●%*"
+			end
+		end
 
-    function _G.autosave_state()
-      if not vim.g.autosave_enabled then return 'off' end
+		---@diagnostic disable-next-line: duplicate-set-field
+		statusline.section_location = function()
+			return "%2l:%-2v " .. save_icon()
+		end
 
-      if _G.autosave_is_active() then return 'on' end
+		---@diagnostic disable-next-line: duplicate-set-field
+		statusline.section_filename = function(args)
+			return default_section_filename(args)
+		end
 
-      return 'ignored'
-    end
-
-    local saveStatusIcon = function()
-      local state = _G.autosave_state()
-
-      if state == 'on' then
-        return '%#AutoSaveOn# ●%*'
-      elseif state == 'ignored' then
-        return '%#AutoSaveIgnored# ●%*'
-      else
-        return '%#AutoSaveOff# ●%*'
-      end
-    end
-
-    ---@diagnostic disable-next-line: duplicate-set-field
-    statusline.section_location = function() return '%2l:%-2v' .. saveStatusIcon() end
-
-    ---@diagnostic disable-next-line: duplicate-set-field
-    statusline.section_filename = function(args)
-      local filename = default_section_filename(args)
-
-      return filename
-    end
-  end,
+		require("mini.pairs").setup()
+	end,
 }

@@ -1,16 +1,25 @@
-return { -- Useful plugin to show you pending keybinds.
-  'folke/which-key.nvim',
-  event = 'VimEnter',
-  opts = {
-    -- delay between pressing a key and opening which-key (milliseconds)
-    delay = 0,
-    icons = { mappings = vim.g.have_nerd_font },
+return {
+	"folke/which-key.nvim",
+	event = "VeryLazy",
+	opts = {
+		delay = 300,
+		icons = {
+			mappings = vim.g.have_nerd_font,
+		},
+		spec = {
+			{ "<leader>s", group = "[S]earch", mode = { "n", "v" } },
+		},
+	},
+	config = function(_, opts)
+		local wk = require("which-key")
+		wk.setup(opts)
 
-    -- Document existing key chains
-    spec = {
-      { '<leader>s', group = '[S]earch', mode = { 'n', 'v' } },
-      --{ '<leader>t', group = '[T]oggle' },
-      { '<leader>H', group = 'Git [H]unk', mode = { 'n', 'v' } },
-    },
-  },
+		-- Register group labels for leader prefixes
+		wk.add({
+			{ "<leader>r", group = "Replace" },
+			{ "<leader>u", group = "Toggle" },
+			{ "<leader>w", group = "Window" },
+			{ "<leader>n", group = "Neotest" },
+		})
+	end,
 }

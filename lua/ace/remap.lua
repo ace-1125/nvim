@@ -1,41 +1,41 @@
--- NOTE: Terminal start ##########################################################################
+-- Core keymaps (no plugin dependencies)
 local term_buf = nil
 local term_win = nil
 
 local function toggle_terminal()
-  -- If window exists → close it
-  if term_win and vim.api.nvim_win_is_valid(term_win) then
-    vim.api.nvim_win_close(term_win, true)
-    term_win = nil
-    return
-  end
+	-- If window exists → close it
+	if term_win and vim.api.nvim_win_is_valid(term_win) then
+		vim.api.nvim_win_close(term_win, true)
+		term_win = nil
+		return
+	end
 
-  -- Open bottom split
-  vim.cmd 'botright split'
-  vim.cmd 'resize 12'
+	-- Open bottom split
+	vim.cmd("botright split")
+	vim.cmd("resize 12")
 
-  term_win = vim.api.nvim_get_current_win()
+	term_win = vim.api.nvim_get_current_win()
 
-  -- If buffer exists → reuse it
-  if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
-    vim.api.nvim_win_set_buf(term_win, term_buf)
-  else
-    vim.cmd 'terminal'
-    term_buf = vim.api.nvim_get_current_buf()
-  end
+	-- If buffer exists → reuse it
+	if term_buf and vim.api.nvim_buf_is_valid(term_buf) then
+		vim.api.nvim_win_set_buf(term_win, term_buf)
+	else
+		vim.cmd("terminal")
+		term_buf = vim.api.nvim_get_current_buf()
+	end
 
-  vim.cmd 'startinsert'
+	vim.cmd("startinsert")
 end
 
-vim.api.nvim_create_autocmd('TermOpen', {
-  callback = function() vim.wo.winhighlight = 'Normal:TerminalNormal' end,
+vim.api.nvim_create_autocmd("TermOpen", {
+	callback = function()
+		vim.wo.winhighlight = "Normal:TerminalNormal"
+	end,
 })
 
 vim.keymap.set('n', '<leader>t', toggle_terminal, { desc = 'Toggle terminal (bottom)' })
 
 -- exit terminal mode easily
-vim.keymap.set('t', '<Esc>', [[<C-\><C-n>]], { desc = 'Exit terminal mode' })
-
 vim.keymap.set('t', '<Esc>', '<C-\\><C-n>', { desc = 'Exit terminal mode' })
 -- NOTE: Terminal end ##########################################################################
 
@@ -61,7 +61,6 @@ vim.keymap.set('n', '<leader>wL', function() vim.cmd 'wincmd |' end, { desc = 'm
 vim.keymap.set('n', '<leader>uw', function() vim.wo.wrap = not vim.wo.wrap end, { desc = 'Toggle wrap' })
 
 -- NOTE: window mgnt end #####################################################################
-vim.keymap.set('n', '<leader>pv', vim.cmd.Ex, { desc = 'close to tree' })
 vim.keymap.set('n', '<leader>us', function() vim.o.spell = not vim.o.spell end, { desc = 'Toggle spell' })
 
 vim.keymap.set('v', 'J', ":m '>+1<CR>gv=gv")
@@ -74,4 +73,4 @@ vim.keymap.set('x', '<leader>p', '"_dP')
 
 vim.keymap.set('n', '<leader>rf', ':%s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>', { desc = 'replace word in file' })
 vim.keymap.set('v', '<leader>rv', ':s/\\<<C-r><C-w>\\>/<C-r><C-w>/gI<Left><Left><Left>', { desc = 'replace word in selection' })
-vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true, desc = 'make file executable'})
+vim.keymap.set('n', '<leader>x', '<cmd>!chmod +x %<CR>', { silent = true, desc = 'make file executable' })
