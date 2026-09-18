@@ -8,7 +8,7 @@ local function pad(desc, fill, width)
 end
 
 local function logo_height(logo)
-  local cmd = 'fastfetch -s none'
+  local cmd = 'fastfetch -s none --logo-position top'
   if logo then cmd = cmd .. ' --logo ' .. logo end
   local result = vim.fn.system(cmd .. ' 2>/dev/null | wc -l')
   return tonumber(result) or 20
@@ -33,7 +33,7 @@ return {
     pick = nil,
     keys = {
       { icon = " ", key = "f", desc = pad("Find File", "·"), action = ":lua Snacks.dashboard.pick('files')" },
-      { icon = " ", key = "t", desc = pad("Open Tree", "·"), action = ":Neotree" },
+      { icon = " ", key = "o", desc = pad("Open Tree", "·"), action = ":Neotree" },
       { icon = " ", key = "g", desc = pad("Find Text", "·"), action = ":lua Snacks.dashboard.pick('live_grep')" },
       { icon = " ", key = "r", desc = pad("Recent Files", "·"), action = ":lua Snacks.dashboard.pick('oldfiles')" },
       { icon = " ", key = "c", desc = pad("Config", "·"), action = ":lua Snacks.dashboard.pick('files', {cwd = vim.fn.stdpath('config')})" },
@@ -89,7 +89,7 @@ return {
     {
       pane = 2,
       section = "terminal",
-      cmd = "fastfetch -s none --logo-padding-left 15",
+      cmd = "fastfetch -s none --logo-position top --logo-padding-left 15",
       height = logo_height(),
       padding = 1,
     },
@@ -102,8 +102,8 @@ return {
     padding = 1,
   },
     { section = "keys", gap = 1, padding = 1 },
-    { pane = 2, icon = " ", title = "Recent Files", section = "recent_files", indent = 2, padding = 1 },
-    { pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
+    { pane = 2, icon = " ", title = "Project Files", section = "recent_files", cwd = true, indent = 2, padding = 1 },
+    --{ pane = 2, icon = " ", title = "Projects", section = "projects", indent = 2, padding = 1 },
     {
       pane = 2,
       icon = " ",
